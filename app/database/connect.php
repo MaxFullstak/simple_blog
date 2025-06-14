@@ -6,7 +6,10 @@ $db_name = "dynamic_blog";
 $db_user = "root";
 $db_pass = "2468";
 $charset = "utf8";
-$options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+$options = array(
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+);
 
 try {
     $connect = new PDO(
