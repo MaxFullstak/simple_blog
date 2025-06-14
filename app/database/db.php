@@ -76,11 +76,62 @@ function selectOne($table, $params = [])
     return $query->fetch();
 }
 
-$params = [
-    'admin' => 1,
-    'username' => 'Petya',
-];
+// Запись в таблицу БД
+function insert($table, $params)
+{
+    global $connect;
+    $i = 0;
+    $coll = "";
+    $mask = "";
+    foreach ($params as $key => $value) {
+        if ($i === 0) {
+            $coll = $coll . "$key";
+            $mask = $mask . "'" . "$value" . "'";
+        } else {
+            $coll = $coll . ", $key";
+            $mask = $mask . ", '" . "$value" . "'";
+        }
+        $i++;
+    }
 
-tt(selectAll("users", $params));
+    $sql = "INSERT INTO $table ($coll) VALUES ($mask)";
 
-tt(selectOne("users"));
+    $query = $connect->prepare($sql);
+    $query->execute($params);
+    doCheckError($query);
+    return $connect->lastInsertId();
+}
+
+
+// Обновление строки в таблице
+function update($table, $id, $params)
+{
+    global $connect;
+    $i = 0;
+    $str = '';
+    foreach ($params as $key => $value) {
+        if ($i === 0) {
+            $str = $str . $key . " = '" . $value . "'";
+        } else {
+            $str = $str . ", " . $key . " = '" . $value . "'";
+        }
+        $i++;
+    }
+
+    $sql = "UPDATE $table SET $str WHERE id = $id";
+    $query = $connect->prepare($sql);
+    $query->execute($params);
+    doCheckError($query);
+}
+
+
+// Удаление строки в таблице
+function delete($table, $id)
+{
+    global $connect;
+    //DELETE FROM `topics` WHERE id = 3
+    $sql = "DELETE FROM $table WHERE id =" . $id;
+    $query = $connect->prepare($sql);
+    $query->execute();
+    doCheckError($query);
+}
