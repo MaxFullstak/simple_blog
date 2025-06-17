@@ -22,14 +22,29 @@
                         <a class="nav-link" href="<?php echo BASE_URL . 'about.php' ?>">Услуги</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#"
-                           role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i>Кабинет
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="login.php">Админ панель</a></li>
-                            <li><a class="dropdown-item" href="#">Выход</a></li>
-                        </ul>
+                        <?php if (isset($_SESSION['id'])): ?>
+                            <a class="nav-link dropdown-toggle" href="#"
+                               role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>
+                                <?php echo $_SESSION['login']; ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <?php if ($_SESSION['admin']): ?>
+                                    <li><a class="dropdown-item" href="login.php">Админ панель</a></li>
+                                <?php endif; ?>
+                                <li><a class="dropdown-item" href="logout.php">Выход</a></li>
+                            </ul>
+                        <?php else: ?>
+                            <a class="nav-link dropdown-toggle" href="login.php"
+                               role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>Войти
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="reg.php">Регистрация</a></li>
+                            </ul>
+                        <?php endif; ?>
+
+
                     </li>
                 </ul>
             </div>
