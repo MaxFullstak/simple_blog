@@ -632,3 +632,12 @@ footer {
     margin-left: 55px;
     transition: all .3s;
 }
+
+/*
+FORMS ERROR
+ */
+.err_form {
+    color: red;
+    font-style: italic;
+    font-size: 0.8rem;
+}
