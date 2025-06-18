@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_log'])) {
 
 
             if ($_SESSION['admin']) {
-                header('location: ' . BASE_URL . admin / admin . php);
+                header('location: ' . BASE_URL . 'admin/posts/index.php');
             } else {
                 header('location: ' . BASE_URL);
             }
