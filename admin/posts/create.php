@@ -11,6 +11,7 @@ include '../../app/database/db.php';
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <!--  Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
@@ -73,9 +74,13 @@ include '../../app/database/db.php';
                         <input type="text" class="form-control" placeholder="Title" aria-label="Название статьи">
                     </div>
                     <div class="w-100"></div>
-                    <div class="col">
+
+                    <div class="col mb-3">
                         <label for="content" class="form-label">Содержимое записи</label>
-                        <textarea class="form-control" id="content" rows="6"></textarea>
+                        <?php
+                        $content = $_POST['content'] ?? '';
+                        include '../../app/ui/editor-text.php'
+                        ?>
                     </div>
                     <div class="w-100"></div>
                     <div class="input-group col">
@@ -106,6 +111,8 @@ include '../../app/database/db.php';
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
         crossorigin="anonymous"></script>
+
+
 <!--Popper JS -->
 <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"-->
 <!--        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"-->
