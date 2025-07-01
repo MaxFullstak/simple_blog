@@ -1,6 +1,6 @@
 <?php
 include '../../path.php';
-include '../../app/database/db.php';
+include '../../app/controllers/topics.php';
 ?>
 
 
@@ -55,12 +55,15 @@ include '../../app/database/db.php';
                 <div class="title col-5">Название</div>
                 <div class="rd col-4">Управление</div>
             </div>
-            <div class="row post">
-                <div class="id col-1">1</div>
-                <div class="title col-5">Путешествие</div>
-                <div class="red col-2"><a href="">Edit</a></div>
-                <div class="del col-2"><a href="">Delete</a></div>
-            </div>
+            <?php foreach ($topics as $key => $topic): ?>
+                <div class="row post">
+                    <div class="id col-1"><?= $key + 1; ?></div>
+                    <div class="title col-5"><?= $topic['name']; ?></div>
+                    <div class="red col-2"><a href="edit.php?id=<?= $topic['id']; ?>">edit</a></div>
+                    <div class="del col-2"><a href="index.php?del_id=<?= $topic['id']; ?>">delete</a></div>
+                </div>
+            <?php endforeach; ?>
+
         </div>
     </div>
 </div>

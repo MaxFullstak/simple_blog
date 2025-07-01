@@ -332,7 +332,7 @@ SIDEBAR
     font-weight: bold;
 }
 
-.add-post form div{
+.add-post form div {
     margin: 2rem 0;
 }
 
@@ -349,4 +349,13 @@ error msg
     color: #A52A2A;
     padding-left: 10px;
     font-weight: 500;
+}
+
+/*
+FORMS ERROR
+ */
+.err_form {
+    color: red;
+    font-style: italic;
+    font-size: 0.8rem;
 }

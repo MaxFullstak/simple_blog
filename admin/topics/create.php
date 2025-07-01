@@ -1,6 +1,6 @@
 <?php
 include '../../path.php';
-include '../../app/database/db.php';
+include '../../app/controllers/topics.php';
 ?>
 
 
@@ -55,19 +55,27 @@ include '../../app/database/db.php';
                 <h2>Создать категорию</h2>
             </div>
             <div class="row add-post">
+                <div class="mb-3 col-12 col-md-4">
+                    <?php if (!empty($errorMsg)): ?>
+                        <p class="err_form"><?= $errorMsg ?></p>
+                    <?php endif; ?>
+                </div>
+
                 <form action="create.php" method="post">
 
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Имя категории" aria-label="Имя категории">
+                        <input name="name" type="text" class="form-control"
+                               placeholder="Имя категории" value="<?= $name ?>">
                     </div>
                     <div class="w-100"></div>
                     <div class="col">
                         <label for="content" class="form-label">Описание категории </label>
-                        <textarea class="form-control" id="content" rows="3"></textarea>
+                        <textarea name="description" class="form-control"
+                                  id="content" rows="3"><?= $description ?></textarea>
                     </div>
                     <div class="w-100"></div>
                     <div class="col">
-                        <button class="btn btn-primary" type="submit">Сохранить категорию</button>
+                        <button name="topic-create" class="btn btn-primary" type="submit">Сохранить категорию</button>
                     </div>
                 </form>
             </div>
