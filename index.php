@@ -1,6 +1,6 @@
 <?php
 include 'path.php';
-include './app/database/db.php';
+include './app/controllers/posts.php';
 ?>
 
 <!doctype html>
@@ -49,24 +49,23 @@ include './app/database/db.php';
             <div class="col-12">
                 <div id="postsCarousel" class="carousel slide mx-auto" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="assets/images/image_1.png" class="d-block w-100" alt="Популярная публикация 1">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5 class="post-title"><a href="#">Первая публикация</a></h5>
+                        <?php if (!empty($topPosts)): ?>
+                            <?php foreach ($topPosts as $index => $post): ?>
+                                <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                                    <img src="assets/images/<?= $post['img'] ?>" class="d-block w-100" alt="<?= htmlspecialchars($post['title']) ?>">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5 class="post-title"><a href="single.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a></h5>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="carousel-item active">
+                                <img src="assets/images/image_1.png" class="d-block w-100" alt="Нет постов">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="post-title"><a href="#">Нет доступных постов</a></h5>
+                                </div>
                             </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="assets/images/image_2.png" class="d-block w-100" alt="Популярная публикация 2">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5 class="post-title"><a href="#">Вторая публикация</a></h5>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="assets/images/image_3.png" class="d-block w-100" alt="Популярная публикация 3">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5 class="post-title"><a href="#">Третья публикация</a></h5>
-                            </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#postsCarousel"
                             data-bs-slide="prev">
@@ -92,81 +91,66 @@ include './app/database/db.php';
         <div class="row">
             <!-- Main content -->
             <div class="main-content col-lg-8 col-12">
-                <h2 class="section-title mb-4">Последние публикации</h2>
+                <?php if (!empty($searchTerm)): ?>
+                    <h2 class="section-title mb-4">Результаты поиска: "<?= htmlspecialchars($searchTerm) ?>"</h2>
+                <?php else: ?>
+                    <h2 class="section-title mb-4">Последние публикации</h2>
+                <?php endif; ?>
 
-                <!-- Post 1 -->
-                <div class="post card mb-4">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="assets/images/image_3.png" alt="Изображение публикации"
-                                 class="img-fluid rounded-start w-100 h-100 object-fit-cover">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h3 class="post-card-title">
-                                    <a href="single.php">Прикольная статья на тему динамических сайтов...</a>
-                                </h3>
-                                <div class="post-meta mb-2">
-                                    <span class="me-3"><i class="far fa-user me-1"></i> Имя автора</span>
-                                    <span><i class="far fa-calendar me-1"></i> Mar 11, 2021</span>
+                <?php if (!empty($posts)): ?>
+                    <?php foreach ($posts as $post): ?>
+                        <div class="post card mb-4">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="assets/images/<?= $post['img'] ?>" alt="<?= htmlspecialchars($post['title']) ?>"
+                                         class="img-fluid rounded-start w-100 h-100 object-fit-cover">
                                 </div>
-                                <p class="preview-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi
-                                    asperiores beatae expedita facilis fuga impedit iusto laborum molestias officia
-                                    optio quos saepe sed, tempore, tenetur totam vel veritatis! Atque, vero!</p>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h3 class="post-card-title">
+                                            <a href="single.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                        </h3>
+                                        <div class="post-meta mb-2">
+                                            <span class="me-3"><i class="far fa-user me-1"></i> <?= htmlspecialchars($post['username']) ?></span>
+                                            <span><i class="far fa-calendar me-1"></i> <?= formatDate($post['created_date']) ?></span>
+                                        </div>
+                                        <p class="preview-text"><?= truncateText($post['content']) ?></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    <?php endforeach; ?>
+
+                    <!-- Пагинация -->
+                    <?php if (empty($searchTerm) && isset($totalPages) && $totalPages > 1): ?>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <?php if ($currentPage > 1): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $currentPage - 1 ?><?= isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '' ?>">Предыдущая</a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?><?= isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '' ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($currentPage < $totalPages): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $currentPage + 1 ?><?= isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '' ?>">Следующая</a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <div class="alert alert-info">
+                        <h4>Посты не найдены</h4>
+                        <p>К сожалению, по вашему запросу ничего не найдено. Попробуйте изменить условия поиска.</p>
                     </div>
-                </div>
-
-                <!-- Post 2 -->
-                <div class="post card mb-4">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="assets/images/image_2.png" alt="Изображение публикации"
-                                 class="img-fluid rounded-start w-100 h-100 object-fit-cover">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h3 class="post-card-title">
-                                    <a href="#">Как создать адаптивный дизайн за 5 шагов</a>
-                                </h3>
-                                <div class="post-meta mb-2">
-                                    <span class="me-3"><i class="far fa-user me-1"></i> Другой автор</span>
-                                    <span><i class="far fa-calendar me-1"></i> Apr 5, 2023</span>
-                                </div>
-                                <p class="preview-text">Современные требования к веб-дизайну включают обязательную
-                                    адаптивность. В этой статье мы рассмотрим основные принципы создания сайтов, которые
-                                    отлично выглядят на любых устройствах.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Post 3 -->
-                <div class="post card mb-4">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="assets/images/image_1.png" alt="Изображение публикации"
-                                 class="img-fluid rounded-start w-100 h-100 object-fit-cover">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h3 class="post-card-title">
-                                    <a href="#">Новые тенденции в веб-разработке 2023</a>
-                                </h3>
-                                <div class="post-meta mb-2">
-                                    <span class="me-3"><i class="far fa-user me-1"></i> Ведущий эксперт</span>
-                                    <span><i class="far fa-calendar me-1"></i> May 20, 2023</span>
-                                </div>
-                                <p class="preview-text">Каждый год приносит новые технологии и подходы в веб-разработке.
-                                    В этой статье мы рассмотрим самые перспективные направления, которые стоит освоить в
-                                    этом году.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
+                <?php endif; ?>
             </div>
 
 
@@ -191,13 +175,19 @@ include './app/database/db.php';
                     <div class="card-body">
                         <h3 class="card-title mb-3">Категории</h3>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><a href="#">Стихи</a></li>
-                            <li class="list-group-item"><a href="#">Цитаты</a></li>
-                            <li class="list-group-item"><a href="#">Художественная литература</a></li>
-                            <li class="list-group-item"><a href="#">Биографии</a></li>
-                            <li class="list-group-item"><a href="#">Мотивация</a></li>
-                            <li class="list-group-item"><a href="#">Вдохновение</a></li>
-                            <li class="list-group-item"><a href="#">Жизненные уроки</a></li>
+                            <li class="list-group-item">
+                                <a href="<?= BASE_URL ?>" class="<?= !isset($_GET['topic']) ? 'fw-bold' : '' ?>">Все категории</a>
+                            </li>
+                            <?php if (!empty($topics)): ?>
+                                <?php foreach ($topics as $topic): ?>
+                                    <li class="list-group-item">
+                                        <a href="?topic=<?= $topic['id'] ?>" 
+                                           class="<?= isset($_GET['topic']) && $_GET['topic'] == $topic['id'] ? 'fw-bold' : '' ?>">
+                                            <?= htmlspecialchars($topic['name']) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </div>

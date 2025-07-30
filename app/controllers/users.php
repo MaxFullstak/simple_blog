@@ -7,7 +7,7 @@ $errorMsg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_reg'])) {
     $login = trim($_POST['login']);
     $email = trim($_POST['email']);
-    $password = trim($_POST['pass'], PASSWORD_DEFAULT);
+    $password = trim($_POST['pass']);
     $password_repeat = $_POST['pass_repeat'];
     $admin = 0;
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_reg'])) {
 
 
             if ($_SESSION['admin']) {
-                header('location: ' . BASE_URL . admin / admin . php);
+                header('location: ' . BASE_URL . 'admin/posts/index.php');
             } else {
                 header('location: ' . BASE_URL);
             }
