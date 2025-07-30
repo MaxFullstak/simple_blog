@@ -1,6 +1,6 @@
 <?php
 include '../../path.php';
-include '../../app/database/db.php';
+include '../../app/controllers/admin-posts.php';
 ?>
 
 
@@ -44,24 +44,91 @@ include '../../app/database/db.php';
         <?php include '../../app/ui/sidebar-admin.php' ?>
 
         <div class="posts col-9">
-            <div class="row button">
-                <a href="<?php echo BASE_URL . "admin/posts/create.php" ?>" class="col-3  btn btn-success">Создать</a>
+            <div class="row button mb-3">
+                <a href="<?php echo BASE_URL . "admin/posts/create.php" ?>" class="col-3 btn btn-success">Создать</a>
                 <span class="col-1"></span>
                 <a href="<?php echo BASE_URL . "admin/posts/index.php" ?>" class="col-3 btn btn-warning">Управление</a>
             </div>
-            <div class="row title-table">
-                <h2>Управление записями</h2>
-                <div class="id col-1">ID</div>
-                <div class="title col-5">Название</div>
-                <div class="author col-2">Автор</div>
-                <div class="rd col-4">Управление</div>
-            </div>
-            <div class="row post">
-                <div class="id col-1">1</div>
-                <div class="title col-5">Какая-то статья</div>
-                <div class="author col-2">admin</div>
-                <div class="red col-2"><a href="">Edit</a></div>
-                <div class="del col-2"><a href="">Delete</a></div>
+
+            <?php if (!empty($successMsg)): ?>
+                <div class="alert alert-success"><?= $successMsg ?></div>
+            <?php endif; ?>
+
+            <?php if (!empty($errorMsg)): ?>
+                <div class="alert alert-danger"><?= $errorMsg ?></div>
+            <?php endif; ?>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Управление записями</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 50px;">ID</th>
+                                    <th>Название</th>
+                                    <th style="width: 120px;">Автор</th>
+                                    <th style="width: 100px;">Статус</th>
+                                    <th style="width: 120px;">Дата</th>
+                                    <th style="width: 200px;">Управление</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($posts)): ?>
+                                    <?php foreach ($posts as $post): ?>
+                                        <tr>
+                                            <td><?= $post['id'] ?></td>
+                                            <td>
+                                                <strong><?= htmlspecialchars(truncateText($post['title'], 40)) ?></strong>
+                                                <br><small class="text-muted"><?= truncateText($post['content'], 60) ?></small>
+                                            </td>
+                                            <td><?= htmlspecialchars($post['username']) ?></td>
+                                            <td>
+                                                <?php if ($post['status']): ?>
+                                                    <span class="badge bg-success">Опубликован</span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-secondary">Черновик</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= formatDate($post['created_date']) ?></td>
+                                            <td>
+                                                <div class="btn-group-vertical btn-group-sm w-100">
+                                                    <a href="edit.php?id=<?= $post['id'] ?>" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-edit"></i> Редактировать
+                                                    </a>
+                                                    <?php if ($post['status']): ?>
+                                                        <a href="?pub_id=<?= $post['id'] ?>" class="btn btn-warning btn-sm" 
+                                                           onclick="return confirm('Снять с публикации?')">
+                                                            <i class="fas fa-eye-slash"></i> Скрыть
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <a href="?pub_id=<?= $post['id'] ?>&publish=1" class="btn btn-success btn-sm" 
+                                                           onclick="return confirm('Опубликовать пост?')">
+                                                            <i class="fas fa-eye"></i> Опубликовать
+                                                        </a>
+                                                    <?php endif; ?>
+                                                    <a href="?delete_id=<?= $post['id'] ?>" class="btn btn-danger btn-sm" 
+                                                       onclick="return confirm('Вы уверены, что хотите удалить этот пост?')">
+                                                        <i class="fas fa-trash"></i> Удалить
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            <p class="mb-2">Записи не найдены</p>
+                                            <a href="create.php" class="btn btn-success">Создать первую запись</a>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

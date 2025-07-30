@@ -19,7 +19,7 @@
                         <a class="nav-link" href="<?php echo BASE_URL . 'about.php' ?>">О нас</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo BASE_URL . 'about.php' ?>">Услуги</a>
+                        <a class="nav-link" href="<?php echo BASE_URL . 'services.php' ?>">Услуги</a>
                     </li>
                     <li class="nav-item dropdown">
                         <?php if (isset($_SESSION['id'])): ?>

@@ -1,4 +1,7 @@
-<?php include("path.php") ?>
+<?php 
+include("path.php");
+include("./app/controllers/single-post.php");
+?>
 
 <!doctype html>
 <html lang="en">
@@ -41,59 +44,58 @@
         <div class="row">
             <!-- Main content -->
             <div class="main-content col-lg-8 col-12">
-                <h2 class="section-title mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi ipsa
-                    ipsam quia sit temporibus! Adipisci ex facere fuga inventore molestias, nemo odit porro quas veniam.
-                    Amet consequatur dignissimos ea suscipit.</h2>
+                <?php if ($post): ?>
+                    <h1 class="section-title mb-4"><?= htmlspecialchars($post['title']) ?></h1>
 
-                <!-- Post 1 -->
-                <div class="mb-4">
-                    <div class="row g-0">
-                        <img src="assets/images/image_3.png" alt="Изображение публикации"
-                             class="rounded w-100 h-100">
+                    <!-- Post -->
+                    <div class="mb-4">
+                        <div class="row g-0">
+                            <img src="assets/images/<?= $post['img'] ?>" alt="<?= htmlspecialchars($post['title']) ?>"
+                                 class="rounded w-100 mb-4">
 
-                        <!--Icons-->
-                        <div class="post-meta mb-2 mt-2">
-                            <span class="me-3"><i class="far fa-user me-1"></i> Имя автора</span>
-                            <span><i class="far fa-calendar me-1"></i> Mar 11, 2021</span>
-                        </div>
+                            <!--Meta info-->
+                            <div class="post-meta mb-3">
+                                <span class="me-3"><i class="far fa-user me-1"></i> <?= htmlspecialchars($post['username']) ?></span>
+                                <span class="me-3"><i class="far fa-calendar me-1"></i> <?= formatDate($post['created_date']) ?></span>
+                                <span class="badge bg-primary"><?= htmlspecialchars($post['topic_name']) ?></span>
+                            </div>
 
-                        <div class="col-md-8">
-                            <div class="card-body col-12">
-                                <h3>Заголовок третьего уровня</h3>
-                                <div>Lorem <a class="link_underline" href="#">ipsum</a> dolor sit amet, consectetur
-                                    adipisicing elit. Amet
-                                    cumque delectus
-                                    dignissimos esse, est et eum excepturi fugiat incidunt ipsa laudantium minus modi
-                                    molestiae nulla quibusdam quisquam, rem sequi sint.
-                                </div>
-                                <div>Accusamus cum dolorum ducimus ea, enim, et, fuga fugiat modi natus numquam odio
-                                    possimus qui quis quo recusandae saepe tempora tenetur veniam. Autem enim facere
-                                    possimus quae quibusdam quidem voluptate.
-                                </div>
-                                <div>A accusamus aut blanditiis culpa cum eveniet exercitationem facere harum hic
-                                    incidunt ipsam laboriosam mollitia neque numquam officiis praesentium quaerat quidem
-                                    quos reiciendis, saepe sunt tempore totam veniam veritatis voluptas.
-                                </div>
-                                <div>Ad dolorum earum neque qui temporibus? Aliquam asperiores, aut consequuntur culpa
-                                    cumque cupiditate delectus dolores eum id molestiae nisi omnis possimus quibusdam,
-                                    quidem tempora. Amet atque hic natus ullam voluptatem!
-                                </div>
-                                <div>A aperiam asperiores deserunt dicta dolor dolore dolorem doloremque est ex
-                                    exercitationem fuga fugiat itaque iusto nam natus necessitatibus nesciunt porro
-                                    quam, quia quibusdam quisquam repellendus tempore totam ullam velit!
-                                </div>
-                                <div>Alias corporis dolorum ducimus eum excepturi facilis provident voluptates.
-                                    Assumenda facilis illum ipsa neque quia repellendus vitae voluptatum. Blanditiis ex
-                                    molestiae pariatur praesentium quia quis totam! Natus neque soluta ullam!
-                                </div>
-                                <div>Accusantium at ducimus minus pariatur vero. Ab atque consequatur, deserunt
-                                    dignissimos error fugit laboriosam necessitatibus neque nobis non numquam quidem
-                                    repudiandae sunt, vel voluptatem? Aspernatur dolorem itaque odio quae vel?
-                                </div>
+                            <div class="post-content">
+                                <?= $post['content'] ?>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Связанные посты -->
+                    <?php if (!empty($relatedPosts)): ?>
+                        <div class="mt-5">
+                            <h3 class="mb-4">Похожие статьи</h3>
+                            <div class="row">
+                                <?php foreach (array_slice($relatedPosts, 0, 2) as $relatedPost): ?>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <img src="assets/images/<?= $relatedPost['img'] ?>" class="card-img-top" alt="<?= htmlspecialchars($relatedPost['title']) ?>">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <a href="single.php?id=<?= $relatedPost['id'] ?>"><?= htmlspecialchars($relatedPost['title']) ?></a>
+                                                </h5>
+                                                <p class="card-text"><?= mb_substr(strip_tags($relatedPost['content']), 0, 100) ?>...</p>
+                                                <small class="text-muted"><?= formatDate($relatedPost['created_date']) ?></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                <?php else: ?>
+                    <div class="alert alert-warning">
+                        <h4>Пост не найден</h4>
+                        <p>К сожалению, запрашиваемый пост не найден или не опубликован.</p>
+                        <a href="<?= BASE_URL ?>" class="btn btn-primary">Вернуться на главную</a>
+                    </div>
+                <?php endif; ?>
 
             </div>
 
@@ -119,13 +121,18 @@
                     <div class="card-body">
                         <h3 class="card-title mb-3">Категории</h3>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><a href="#">Стихи</a></li>
-                            <li class="list-group-item"><a href="#">Цитаты</a></li>
-                            <li class="list-group-item"><a href="#">Художественная литература</a></li>
-                            <li class="list-group-item"><a href="#">Биографии</a></li>
-                            <li class="list-group-item"><a href="#">Мотивация</a></li>
-                            <li class="list-group-item"><a href="#">Вдохновение</a></li>
-                            <li class="list-group-item"><a href="#">Жизненные уроки</a></li>
+                            <li class="list-group-item">
+                                <a href="<?= BASE_URL ?>">Все категории</a>
+                            </li>
+                            <?php if (!empty($topics)): ?>
+                                <?php foreach ($topics as $topic): ?>
+                                    <li class="list-group-item">
+                                        <a href="<?= BASE_URL ?>?topic=<?= $topic['id'] ?>">
+                                            <?= htmlspecialchars($topic['name']) ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </div>

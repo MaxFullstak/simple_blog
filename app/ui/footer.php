@@ -36,13 +36,30 @@
             <div class="footer-section contact-form col-lg-4 col-12">
                 <div class="h-100">
                     <h3 class="footer-title mb-3">Контакты</h3>
-                    <form action="index.php" method="post">
+                    
+                    <?php
+                    // Подключаем контроллер контактов если он еще не подключен
+                    if (!isset($successMessage)) {
+                        include_once "./app/controllers/contact.php";
+                    }
+                    ?>
+                    
+                    <?php if (!empty($successMessage)): ?>
+                        <div class="alert alert-success small py-2"><?= $successMessage ?></div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($errorMessage)): ?>
+                        <div class="alert alert-danger small py-2"><?= $errorMessage ?></div>
+                    <?php endif; ?>
+                    
+                    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
                         <div class="mb-3">
-                            <input type="email" name="email" class="form-control" placeholder="Ваш email...">
+                            <input type="email" name="email" class="form-control" placeholder="Ваш email..." 
+                                   value="<?= isset($email) ? htmlspecialchars($email) : '' ?>" required>
                         </div>
                         <div class="mb-3">
                             <textarea rows="4" name="message" class="form-control"
-                                      placeholder="Ваше сообщение..."></textarea>
+                                      placeholder="Ваше сообщение..." required><?= isset($message) ? htmlspecialchars($message) : '' ?></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="fas fa-envelope me-2"></i>
